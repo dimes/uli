@@ -10,14 +10,14 @@ I recently switched to DuckDuckGo for my internet searches. One thing I miss abo
 
 ![Usage](docs/img/nhl-screenshot.png)
 
-You can also alias Uli commands to make them even shorter by adding lines like this to your .bashrc or .zshrc files:
+You can also alias Uli commands to make them even shorter by adding lines like this to your `.bashrc` or `.zshrc` files:
 
     alias nhl='uli nhl'
     alias nyr='uli nhl nyr'
 
-## Supported Spots
+## Supported Sports
 
-    * NHL
+* NHL
 
 ## Building
 
