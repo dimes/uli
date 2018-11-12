@@ -8,7 +8,7 @@ I recently switch to DuckDuckGo for my internet searches. One thing I miss about
 
 # Usage
 
-    ![Usage](docs/img/nhl-screenshot.png)
+![Usage](docs/img/nhl-screenshot.png)
 
 You can also alias Uli commands to make them even shorter by adding lines like this to your bashrc or zshrc files:
 
