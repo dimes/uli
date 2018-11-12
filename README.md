@@ -6,6 +6,10 @@ An easy-to-use command line tool for fetching real-time sports information
 
 I recently switched to DuckDuckGo for my internet searches. One thing I miss about Google is its ability to show me today's sports games. Uli solves this problem by providing easy access to sports information in the terminal.
 
+## Download
+
+The [Releases Page](https://github.com/dimes/uli/releases) contains the most recent releases of Uli. Binaries for both Linux and OS X are included in the zip file.
+
 ## Usage
 
 ![Usage](docs/img/nhl-screenshot.png)
