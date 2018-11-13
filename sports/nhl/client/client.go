@@ -15,6 +15,9 @@ type Client interface {
 
 	// Date format is "YYYY-MM-DD"
 	Schedule(ctx context.Context, teamID int, startDate, endDate string) ([]*ScheduleGame, error)
+
+	// LiveGameDetails returns live game data for the given scheduled game
+	LiveGameDetails(ctx context.Context, game *ScheduleGame) (*LiveGame, error)
 }
 
 type httpClient struct {
@@ -57,6 +60,19 @@ func (h *httpClient) Schedule(
 	}
 
 	return games, nil
+}
+
+func (h *httpClient) LiveGameDetails(ctx context.Context, game *ScheduleGame) (*LiveGame, error) {
+	if game.Link == "" {
+		return nil, errors.New("Provided game has no link")
+	}
+
+	res := &LiveGame{}
+	if err := h.makeRequest(ctx, game.Link, res); err != nil {
+		return nil, errors.Wrapf(err, "Error getting live game data for %d", game.ID)
+	}
+
+	return res, nil
 }
 
 func (h *httpClient) makeRequest(ctx context.Context, path string, res interface{}) error {

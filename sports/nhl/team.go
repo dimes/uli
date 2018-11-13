@@ -62,5 +62,5 @@ func (t *Team) Execute(ctx context.Context, args []string) error {
 		return strings.Compare(games[i].GameDate, games[j].GameDate) < 0
 	})
 
-	return PrintGames(ctx, t.teamCache, games)
+	return PrintGames(ctx, t.client, t.teamCache, games)
 }

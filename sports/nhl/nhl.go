@@ -14,15 +14,13 @@ import (
 
 var (
 	statusToEmoji = map[string]string{
-		nhl_client.StatusPreGame: "🔴",
-		nhl_client.StatusLive:    "🔴",
-		nhl_client.StatusFinal:   "🏁",
+		nhl_client.StatusLive:  "🔴",
+		nhl_client.StatusFinal: "🏁",
 	}
 
 	showScoreStatus = map[string]bool{
-		nhl_client.StatusPreGame: true,
-		nhl_client.StatusLive:    true,
-		nhl_client.StatusFinal:   true,
+		nhl_client.StatusLive:  true,
+		nhl_client.StatusFinal: true,
 	}
 )
 
@@ -132,5 +130,5 @@ func (n *NHL) gamesToday(ctx context.Context) error {
 		return strings.Compare(gamesToday[i].GameDate, gamesToday[j].GameDate) < 0
 	})
 
-	return PrintGames(ctx, n.teamCache, gamesToday)
+	return PrintGames(ctx, n.client, n.teamCache, gamesToday)
 }

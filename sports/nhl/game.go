@@ -4,17 +4,68 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"sync"
 	"time"
 
 	nhl_client "github.com/dimes/uli/sports/nhl/client"
 	"github.com/olekukonko/tablewriter"
 	"github.com/pkg/errors"
+	"golang.org/x/sync/errgroup"
+)
+
+var (
+	statusToEmoji = map[string]string{
+		nhl_client.StatusLive:  "🔴",
+		nhl_client.StatusFinal: "🏁",
+	}
+
+	showScoreStatus = map[string]bool{
+		nhl_client.StatusLive:  true,
+		nhl_client.StatusFinal: true,
+	}
 )
 
 // PrintGames prints out the given list of games in a table
-func PrintGames(ctx context.Context, teamCache *TeamCache, games []*nhl_client.ScheduleGame) error {
+func PrintGames(
+	ctx context.Context,
+	client nhl_client.Client,
+	teamCache *TeamCache,
+	games []*nhl_client.ScheduleGame,
+) error {
+	var lock sync.Mutex
+	gameToTime := make(map[int]string)
+	group, groupCtx := errgroup.WithContext(ctx)
+	for _, g := range games {
+		game := g
+		if game.Status.Detailed == nhl_client.StatusLive {
+			group.Go(func() error {
+				details, err := client.LiveGameDetails(groupCtx, game)
+				if err != nil {
+					return err
+				}
+
+				currentPeriod := details.LiveData.Linescore.CurrentPeriod
+				timeRemaining := details.LiveData.Linescore.CurrentPeriodTimeRemaining
+
+				lock.Lock()
+				defer lock.Unlock()
+				if timeRemaining == nhl_client.CurrentPeriodEnded {
+					gameToTime[game.ID] = fmt.Sprintf("End of P%d", currentPeriod)
+				} else {
+					gameToTime[game.ID] = fmt.Sprintf("P%d %s", currentPeriod, timeRemaining)
+				}
+
+				return nil
+			})
+		}
+	}
+
+	if err := group.Wait(); err != nil {
+		return errors.Wrap(err, "Error getting live game information")
+	}
+
 	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader([]string{"Time", "", "Home", "Away", "score"})
+	table.SetHeader([]string{"Time", "", "Home", "Away", "score", "Details"})
 	table.SetRowSeparator("-")
 	nowLocal := time.Now().Local()
 	for _, game := range games {
@@ -49,6 +100,11 @@ func PrintGames(ctx context.Context, teamCache *TeamCache, games []*nhl_client.S
 		}
 
 		gameLocal := gameTime.Local()
+		details := gameToTime[game.ID]
+		if details == "" && game.Status.Detailed == nhl_client.StatusFinal {
+			details = "FINAL"
+		}
+
 		formattedDate := gameLocal.Format("01/02")
 		if gameLocal.Year() == nowLocal.Year() {
 			if gameLocal.YearDay() == nowLocal.YearDay()-1 {
@@ -67,6 +123,7 @@ func PrintGames(ctx context.Context, teamCache *TeamCache, games []*nhl_client.S
 			home.FullName,
 			away.FullName,
 			score,
+			details,
 		})
 	}
 	table.Render()

@@ -31,6 +31,7 @@ type ScheduleGame struct {
 		Home HomeAwayTeam `json:"home"`
 		Away HomeAwayTeam `json:"away"`
 	} `json:"teams"`
+	Link string `json:"link"`
 }
 
 // HomeAwayTeam represents the Home or Away team
