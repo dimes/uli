@@ -12,18 +12,6 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-var (
-	statusToEmoji = map[string]string{
-		nhl_client.StatusLive:  "🔴",
-		nhl_client.StatusFinal: "🏁",
-	}
-
-	showScoreStatus = map[string]bool{
-		nhl_client.StatusLive:  true,
-		nhl_client.StatusFinal: true,
-	}
-)
-
 // NHL is the main command for NHL related information
 type NHL struct {
 	client    nhl_client.Client
