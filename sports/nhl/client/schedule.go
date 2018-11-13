@@ -2,13 +2,10 @@ package client
 
 const (
 	// StatusLive is the game status when the game is currently live
-	StatusLive = "In Progress"
-
-	// StatusPreGame is the pre-game status, or the status during period breaks
-	StatusPreGame = "Pre-Game"
+	StatusLive = "Live"
 
 	// StatusScheduled is the game status when the game hasn't started yet
-	StatusScheduled = "Scheduled"
+	StatusScheduled = "Preview"
 
 	// StatusFinal is the game status once the game is finished
 	StatusFinal = "Final"
@@ -25,7 +22,7 @@ type ScheduleGame struct {
 	ID       int    `json:"gamePk"`
 	GameDate string `json:"gameDate"`
 	Status   struct {
-		Detailed string `json:"detailedState"`
+		Abstract string `json:"abstractGameState"`
 	} `json:"status"`
 	Teams struct {
 		Home HomeAwayTeam `json:"home"`

@@ -37,7 +37,7 @@ func PrintGames(
 	group, groupCtx := errgroup.WithContext(ctx)
 	for _, g := range games {
 		game := g
-		if game.Status.Detailed == nhl_client.StatusLive {
+		if game.Status.Abstract == nhl_client.StatusLive {
 			group.Go(func() error {
 				details, err := client.LiveGameDetails(groupCtx, game)
 				if err != nil {
@@ -95,13 +95,13 @@ func PrintGames(
 		}
 
 		score := ""
-		if showScoreStatus[game.Status.Detailed] {
+		if showScoreStatus[game.Status.Abstract] {
 			score = fmt.Sprintf("%d - %d", game.Teams.Home.Score, game.Teams.Away.Score)
 		}
 
 		gameLocal := gameTime.Local()
 		details := gameToTime[game.ID]
-		if details == "" && game.Status.Detailed == nhl_client.StatusFinal {
+		if details == "" && game.Status.Abstract == nhl_client.StatusFinal {
 			details = "FINAL"
 		}
 
@@ -119,7 +119,7 @@ func PrintGames(
 		formattedTime := fmt.Sprintf("%s %s", formattedDate, gameLocal.Format("3:04 pm"))
 		table.Append([]string{
 			formattedTime,
-			statusToEmoji[game.Status.Detailed],
+			statusToEmoji[game.Status.Abstract],
 			home.FullName,
 			away.FullName,
 			score,
