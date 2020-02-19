@@ -1,4 +1,4 @@
-# Uli
+# Uli - A great toolsi
 
 An easy-to-use command line tool for fetching real-time sports information 
 
